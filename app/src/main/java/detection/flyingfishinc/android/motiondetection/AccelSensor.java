@@ -5,9 +5,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
-public class AccelSensor implements SensorEventListener {
+public class AccelSensor implements SensorEventListener{
 
     private static final String LOG_TAG = AccelSensor.class.getSimpleName();
 

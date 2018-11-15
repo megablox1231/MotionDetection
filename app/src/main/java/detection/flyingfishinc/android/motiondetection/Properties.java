@@ -13,9 +13,15 @@ public class Properties implements Parcelable {
     //private Context myContext;
 
     private final float DEFAULTMAXACCEL = 3;
-    private float myMaxAccel;
-    private String myMusicFileName;
+    public float myMaxAccel;
+    public String myMusicFileName;  //"default" if it is the default music file
+    public boolean checking;    //true if the accelerometer listener is registered and checking
 
+    public Properties(){
+        myMaxAccel = DEFAULTMAXACCEL;
+        myMusicFileName = "default";
+        checking = false;
+    }
 
     public Properties(Parcel in){
        // myContext = context;

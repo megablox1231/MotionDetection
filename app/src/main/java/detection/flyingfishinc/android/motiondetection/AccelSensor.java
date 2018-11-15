@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -16,6 +17,8 @@ public class AccelSensor implements SensorEventListener{
     private SensorManager mySensorManager;
     private Sensor  myAccelerometer;
     private Properties myProps;   //the properties object that owns this listener
+    private Context myContext;  //the context of the service
+
 
     private long lastTime;  //the time of the last call of accelchange
     private long curTime;   //the time of the current accelchange
@@ -23,15 +26,18 @@ public class AccelSensor implements SensorEventListener{
     private float[] lastAccels; //the absolute value x, y, and z values of the curAccels from the accelerometer on the last change
     private float myMaxAccel; //the max curAccels change before alarm goes off
     private boolean initAccels;    //true if last Accels have not been recorded yet
+    private String myMusicFileName; //the name of the music file for the alarm
 
-    public AccelSensor(Context context, float accelChange, Properties props){
-        mySensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+    public AccelSensor(Context context, Properties props){
+        myContext = context;
+        mySensorManager = (SensorManager) myContext.getSystemService(Context.SENSOR_SERVICE);
         myAccelerometer = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         curAccels = new float[3];
         lastAccels = new float[3];
         initAccels = true;
-        myMaxAccel = accelChange;
         myProps = props;
+        myMaxAccel = myProps.myMaxAccel;
+        myMusicFileName = myProps.myMusicFileName;
         lastTime = System.currentTimeMillis();
     }
 
@@ -55,8 +61,9 @@ public class AccelSensor implements SensorEventListener{
                 curAccels[2] = Math.abs(event.values[2]);
                 for (int i = 0; i < 3; i++) {
                     if (curAccels[i] - lastAccels[i] > myMaxAccel) {
-                        myProps.onAccelAlert();
+                        onAccelAlert();
                         unregisterAccel();
+                        myProps.checking = false;
                         Log.d(LOG_TAG, "ALERT DEVICE MOVED!!!");
                     }
                 }
@@ -79,5 +86,15 @@ public class AccelSensor implements SensorEventListener{
 
     public void setMyMaxAccel(float maxAccel){
         myMaxAccel = maxAccel;
+    }
+
+    //plays the alarm sound
+    public void onAccelAlert(){
+        MediaPlayer mediaPlayer = null; // put this for now to appease the error
+        if(myMusicFileName.equals("default")) { //play the default alarm sound
+            mediaPlayer = MediaPlayer.create(myContext, R.raw.siren_sound);
+        }
+        //TODO: implement choosing other music files from storage
+        mediaPlayer.start();
     }
 }

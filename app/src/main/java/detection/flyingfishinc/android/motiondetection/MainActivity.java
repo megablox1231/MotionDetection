@@ -15,9 +15,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        props = new Properties(getApplicationContext());
-        props.initAccelSensor();
-        props.registerAccel();
+        //TODO: check if properties have already been created
+        Properties props = new Properties();
+        Intent intent = new Intent();
         Log.d(LOG_TAG, "onCreate");
     }
 

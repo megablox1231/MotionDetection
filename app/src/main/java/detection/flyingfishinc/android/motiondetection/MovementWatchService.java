@@ -57,23 +57,28 @@ public class MovementWatchService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null) {
-            Properties props;
-
-
-
-
-            final String action = intent.getAction();
-            if (ACTION_FOO.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionFoo(param1, param2);
-            } else if (ACTION_BAZ.equals(action)) {
-                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-                handleActionBaz(param1, param2);
-            }
+        Properties props;
+        if (intent == null) {
+            props = new Properties();
+        } else {
+            props = intent.getParcelableExtra("props");  //TODO: make sure key is "props" too
         }
+        AccelSensor accelSensor = new AccelSensor(getApplicationContext(), props);
+        accelSensor.registerAccel();
+        props.checking = true;
+        while(props.checking){
+
+        }
+//            final String action = intent.getAction();
+//            if (ACTION_FOO.equals(action)) {
+//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
+//                handleActionFoo(param1, param2);
+//            } else if (ACTION_BAZ.equals(action)) {
+//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
+//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
+//                handleActionBaz(param1, param2);
+//            }
     }
 
     /**

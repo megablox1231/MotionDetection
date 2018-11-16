@@ -1,6 +1,9 @@
 package detection.flyingfishinc.android.motiondetection;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +20,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //TODO: check if properties have already been created
         Properties props = new Properties();
-        Intent intent = new Intent();
+        Intent notifIntent = new Intent(this, MovementWatchService.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notifIntent, 0);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, null)
+                .setContentTitle(getText(getApplicationContext().))
         Log.d(LOG_TAG, "onCreate");
     }
 

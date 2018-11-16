@@ -66,8 +66,7 @@ public class MovementWatchService extends IntentService {
         AccelSensor accelSensor = new AccelSensor(getApplicationContext(), props);
         accelSensor.registerAccel();
         props.checking = true;
-        while(props.checking){
-
+        while(props.checking){  //keeps service running until alarm goes off
         }
 //            final String action = intent.getAction();
 //            if (ACTION_FOO.equals(action)) {

@@ -6,8 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.net.Uri;
 import android.util.Log;
 
 public class AccelSensor implements SensorEventListener{
@@ -18,6 +17,7 @@ public class AccelSensor implements SensorEventListener{
     private Sensor  myAccelerometer;
     private Properties myProps;   //the properties object that owns this listener
     private Context myContext;  //the context of the service
+    private MediaPlayer myMediaPlayer;
 
 
     private long lastTime;  //the time of the last call of accelchange
@@ -38,6 +38,7 @@ public class AccelSensor implements SensorEventListener{
         myProps = props;
         myMaxAccel = myProps.myMaxAccel;
         myMusicFileName = myProps.myMusicFileName;
+        initMediaPlayer();
         lastTime = System.currentTimeMillis();
     }
 
@@ -62,8 +63,6 @@ public class AccelSensor implements SensorEventListener{
                 for (int i = 0; i < 3; i++) {
                     if (curAccels[i] - lastAccels[i] > myMaxAccel) {
                         onAccelAlert();
-                        unregisterAccel();
-                        myProps.checking = false;
                         Log.d(LOG_TAG, "ALERT DEVICE MOVED!!!");
                     }
                 }
@@ -75,13 +74,13 @@ public class AccelSensor implements SensorEventListener{
     //use to register the sensor listener when resuming app
     public void registerAccel(){
         mySensorManager.registerListener(this, myAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        Log.d(LOG_TAG, "Listener Register");
+        Log.d(LOG_TAG, "Listener Registered");
     }
 
     //use to unregister the sensor listener when pausing or elsewhere
     public void unregisterAccel() {
         mySensorManager.unregisterListener(this);
-        Log.d(LOG_TAG, "Listener Unregister");
+        Log.d(LOG_TAG, "Listener Unregistered");
     }
 
     public void setMyMaxAccel(float maxAccel){
@@ -90,11 +89,23 @@ public class AccelSensor implements SensorEventListener{
 
     //plays the alarm sound
     public void onAccelAlert(){
-        MediaPlayer mediaPlayer = null; // put this for now to appease the error
-        if(myMusicFileName.equals("default")) { //play the default alarm sound
-            mediaPlayer = MediaPlayer.create(myContext, R.raw.siren_sound);
-        }
+        unregisterAccel();
+        myMediaPlayer.setLooping(true);
+        myMediaPlayer.start();
+    }
+
+    private void initMediaPlayer(){
         //TODO: implement choosing other music files from storage
-        mediaPlayer.start();
+        if(myMusicFileName.equals("default")) { //play the default alarm sound
+            myMediaPlayer = MediaPlayer.create(myContext, R.raw.siren_sound);
+        }
+        else{
+            Uri uri = Uri.parse(myMusicFileName);
+            myMediaPlayer = MediaPlayer.create(myContext, uri);
+        }
+    }
+
+    public MediaPlayer getMediaPlayer(){
+        return myMediaPlayer;
     }
 }

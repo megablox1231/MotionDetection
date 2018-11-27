@@ -2,4 +2,12 @@
     <string name="app_name">Motion Detection</string>
     <string name="Hello">Hello World!</string>
     <string name="back">Back</string>
+    <string name="SettingsBtnDescript">Settings</string>
+    <string name="alarm_sound">Alarm Sound</string>
+    <string name="save">Save</string>
+    <string name="alarm">alarm</string>
+    <string-array name="musicLabels">
+        <item>Siren 1</item>
+        <item>Custom Audio</item>
+    </string-array>
 </resources>

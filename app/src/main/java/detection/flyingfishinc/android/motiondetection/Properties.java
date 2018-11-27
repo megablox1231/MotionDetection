@@ -1,18 +1,13 @@
 package detection.flyingfishinc.android.motiondetection;
 
-import android.content.Context;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.MediaStore;
 
 public class Properties implements Parcelable {
 
-    //private AccelSensor accelSensor;
-    //private Context myContext;
 
-    private final float DEFAULTMAXACCEL = 3;
+    private final float DEFAULTMAXACCEL = 0.5f;
     public float myMaxAccel;
     public String myMusicFileName;  //"default" if it is the default music file
     public boolean checking;    //true if the accelerometer listener is registered and checking
@@ -23,39 +18,21 @@ public class Properties implements Parcelable {
         checking = false;
     }
 
+    public Properties(String musicFileName) {
+        myMaxAccel = DEFAULTMAXACCEL;
+        myMusicFileName = musicFileName;
+        checking = false;
+    }
+
     public Properties(Parcel in){
-       // myContext = context;
         Bundle bundle = in.readBundle();
-        //if(bundle.getFloat("myMaxAccel"))
         myMaxAccel = bundle.getFloat("myMaxAccel");
         myMusicFileName = bundle.getString("myMusicFileName");
     }
 
-    //intialization fo the accelSensor object cuz dont want to do it in constructor
-    public void initAccelSensor(){
-       // accelSensor = new AccelSensor(myContext, DEFAULTMAXACCEL, this);
+    public void setMusicFileName(String musicFileName) {
+        myMusicFileName = musicFileName;
     }
-
-//    public void onAccelAlert(){
-//        MediaPlayer mediaPlayer = MediaPlayer.create(myContext, R.raw.siren_sound);
-//        mediaPlayer.start();
-//    }
-//
-//    //furthur abstraction of accel methods
-//    public void changeAccel(float maxAccel){
-//        accelSensor.setMyMaxAccel(maxAccel);
-//
-//    }
-//
-//    //furthur abstraction of accel methods
-//    public void registerAccel(){
-//        accelSensor.registerAccel();
-//    }
-//
-//    //furthur abstraction of accel methods
-//    public void unregisterAccel(){
-//        accelSensor.unregisterAccel();
-//    }
 
     //default implementation, nothing to see here folks.
     @Override
@@ -79,5 +56,6 @@ public class Properties implements Parcelable {
         Bundle bundle = new Bundle();
         bundle.putString("myMusicFileName", myMusicFileName);
         bundle.putFloat("myMaxAccel", myMaxAccel);
+        dest.writeBundle(bundle);
     }
 }

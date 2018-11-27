@@ -1,8 +1,15 @@
 package detection.flyingfishinc.android.motiondetection;
 
 import android.app.IntentService;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.os.Binder;
+import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -12,6 +19,12 @@ import android.content.Context;
  * helper methods.
  */
 public class MovementWatchService extends IntentService {
+
+    private static final String LOG_TAG = MovementWatchService.class.getSimpleName();
+    private final IBinder myBinder = new LocalBinder(); //binder given to clients
+    private Properties myProps;
+    private AccelSensor myAccelSensor;
+
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_FOO = "detection.flyingfishinc.android.motiondetection.action.FOO";
@@ -23,6 +36,45 @@ public class MovementWatchService extends IntentService {
 
     public MovementWatchService() {
         super("MovementWatchService");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Intent activityIntent = new Intent(this, MainActivity.class);   //making activity intent for the notification
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, activityIntent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "Channel Id") //making the notification
+                //.setContentTitle("yo")
+                //.setContentText("yoyo")
+                .setSmallIcon(R.drawable.ic_locklocked)
+                .setPriority(NotificationCompat.PRIORITY_LOW)  //same as importance for channel
+                .setContentIntent(pendingIntent)    //sets the intent to start when service is clicked
+                .setAutoCancel(false);  //notification doesn't die when clicked
+//        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+//        managerCompat.notify(12345, builder.build());
+        Notification notification = builder.build();
+        startForeground(1, notification);
+    }
+
+    //class used for client binder
+    public class LocalBinder extends Binder {
+        MovementWatchService getService(){
+            return MovementWatchService.this;
+        }
+    }
+
+    @Override   //what is given to the client when bound
+    public IBinder onBind(Intent intent) {
+        return myBinder;
+    }
+
+    public Properties getProperties(){
+        return myProps;
+    }
+
+    public AccelSensor getAccelSensor(){
+        return myAccelSensor;
     }
 
     /**
@@ -57,27 +109,31 @@ public class MovementWatchService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Properties props;
-        if (intent == null) {
-            props = new Properties();
-        } else {
-            props = intent.getParcelableExtra("props");  //TODO: make sure key is "props" too
+        Log.d(LOG_TAG, "Service started!");
+        myProps = intent.getParcelableExtra("props");
+        myAccelSensor = new AccelSensor(getApplicationContext(), myProps);
+        myAccelSensor.registerAccel();
+        myProps.checking = true;
+        while(myProps.checking){  //keeps service running
         }
-        AccelSensor accelSensor = new AccelSensor(getApplicationContext(), props);
-        accelSensor.registerAccel();
-        props.checking = true;
-        while(props.checking){  //keeps service running until alarm goes off
+    }
+
+    //stuff done before stopping service
+    public void stopServing() {
+        MediaPlayer mediaPlayer = myAccelSensor.getMediaPlayer();
+        if(mediaPlayer.isPlaying()){    //see if the alarm has been triggered yet
+            mediaPlayer.stop();
         }
-//            final String action = intent.getAction();
-//            if (ACTION_FOO.equals(action)) {
-//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-//                handleActionFoo(param1, param2);
-//            } else if (ACTION_BAZ.equals(action)) {
-//                final String param1 = intent.getStringExtra(EXTRA_PARAM1);
-//                final String param2 = intent.getStringExtra(EXTRA_PARAM2);
-//                handleActionBaz(param1, param2);
-//            }
+        else{
+            myAccelSensor.unregisterAccel();
+        }
+        stopSelf();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(LOG_TAG, "Service Destroyed!");
+        super.onDestroy();
     }
 
     /**

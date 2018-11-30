@@ -3,6 +3,7 @@ package detection.flyingfishinc.android.motiondetection;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -120,10 +121,13 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
                 Uri uri = data.getData();
                 String path = uri.toString();
                 selectedMusic = path;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {  //keeps the permission to access the file persistant even after phone restarts
+                    getApplicationContext().getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+            }
                 Log.d(LOG_TAG, "Custom music selected!");
             }
         }
-    }
 
     public void saveSettings(View view) {
         SharedPreferences.Editor editor = MainActivity.mySharedPrefs.edit();

@@ -1,8 +1,10 @@
 package detection.flyingfishinc.android.motiondetection;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -14,6 +16,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -55,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
             alarmButton.setImageResource(R.drawable.ic_locklocked);
             Intent intent = new Intent(this, MovementWatchService.class);
             Intent serviceIntent = new Intent(this, MovementWatchService.class);
+            serviceIntent.putExtra("props", props);
             ContextCompat.startForegroundService(this, serviceIntent);  //services are singletons, guaranteeing only 1 of them so this is fine
             bindService(intent, myConnection, 0);
             Log.d(LOG_TAG, "checked and initialized!");
@@ -66,7 +71,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void initProperties(){
         String musicfileName = mySharedPrefs.getString("musicFileName", "default");
+        verifyMusic(musicfileName);
         props = new Properties(musicfileName);
+    }
+
+    public boolean verifyMusic(String musicFile){
+        File file = new File(musicFile);
+        if(file.exists()){
+            return true;
+        }
+        else{
+
+            return false;
+        }
     }
 
     public void enterSettings(View view) {

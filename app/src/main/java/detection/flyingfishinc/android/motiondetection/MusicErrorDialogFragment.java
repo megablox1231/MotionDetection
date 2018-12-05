@@ -3,6 +3,7 @@ package detection.flyingfishinc.android.motiondetection;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ public class MusicErrorDialogFragment extends DialogFragment {
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorBacking));
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        alertDialog.getWindow().getDecorView().getBackground().setColorFilter(new LightingColorFilter(0xFF000000, 0xFF000000));
         alertDialog.show();
         return alertDialog;
     }

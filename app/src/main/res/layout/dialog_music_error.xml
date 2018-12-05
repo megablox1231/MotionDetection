@@ -12,7 +12,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:background="@color/colorAccent"
-        android:text="Error"
+        android:text="@string/error"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="bold" />
 
@@ -23,6 +23,6 @@
         android:layout_margin="10dp"
         android:layout_marginLeft="10dp"
         android:background="@color/colorAccent"
-        android:text="Custom audio not found!\nDefault audio chosen."
+        android:text="@string/custom_audio_error_descrip"
         android:textColor="@color/colorPrimaryDark" />
 </LinearLayout>

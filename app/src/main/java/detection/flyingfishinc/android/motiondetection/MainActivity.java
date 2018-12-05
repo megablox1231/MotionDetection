@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     //because NotificationChannel is a new library not in support library
     private void createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= 26){
-            CharSequence name = "channel name";
+            CharSequence name = "Motion Detection Alarm";
             String description = "channel description";
             int importance = NotificationManager.IMPORTANCE_LOW;    //low as in how intrusive the notification is
             NotificationChannel channel = new NotificationChannel("Channel Id", name, importance);

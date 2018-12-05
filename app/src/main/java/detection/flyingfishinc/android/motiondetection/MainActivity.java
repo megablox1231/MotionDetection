@@ -1,24 +1,20 @@
 package detection.flyingfishinc.android.motiondetection;
 
-import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-
-import java.io.File;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -71,23 +67,42 @@ public class MainActivity extends AppCompatActivity {
 
     public void initProperties(){
         String musicfileName = mySharedPrefs.getString("musicFileName", "default");
-        verifyMusic(musicfileName);
-        props = new Properties(musicfileName);
+        //Log.d(LOG_TAG, musicfileName);
+        if(!musicfileName.equals("default") && verifyMusic(musicfileName)) {
+            props = new Properties(musicfileName);
+        }
+        else{
+            props = new Properties("default");  //music file not found
+        }
     }
 
+    //checks if the music file exists
     public boolean verifyMusic(String musicFile){
-        File file = new File(musicFile);
-        if(file.exists()){
+        //Uri uri = Uri.parse(musicFile);
+        //ContentResolver cr = getContentResolver();
+        //String[] projection = {MediaStore.MediaColumns.DATA};
+        //Cursor cur = cr.query(Uri.parse(musicFile), projection, null, null, null);
+        //File file = new File(cur.getString(0));
+        if(AccelSensor.tryMusicFile(musicFile, getApplicationContext())){
             return true;
         }
         else{
-
+            SharedPreferences.Editor editor = mySharedPrefs.edit();
+            editor.remove("musicFileName"); //does not exist so removing it
+            editor.apply();
+            FragmentManager manager = getSupportFragmentManager();
+            MusicErrorDialogFragment dialogFragment = new MusicErrorDialogFragment();
+            dialogFragment.show(manager, "dialog");
             return false;
         }
     }
 
     public void enterSettings(View view) {
         Log.d(LOG_TAG, "bbbutton clicked!");
+        if(checked) {
+            turnOffAlarm();
+            checked = false;
+        }
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         startActivity(settingsIntent);
     }
@@ -112,10 +127,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        String yo = mySharedPrefs.getString("musicFileName","default");
         if(checked) {   //making sure there is a service to unbind
             unbindService(myConnection);
         }
-        Log.d(LOG_TAG, "onStop");
+        Log.d(LOG_TAG, "onStop: " + yo);
     }
 
     @Override
@@ -147,10 +163,14 @@ public class MainActivity extends AppCompatActivity {
             bindService(serviceIntent2, myConnection, 0);
         }
         else {
-            alarmButton.setImageResource(R.drawable.ic_lockunlocked);
-            myService.stopServing();
-            unbindService(myConnection);
+            turnOffAlarm();
         }
+    }
+
+    public void turnOffAlarm(){
+        alarmButton.setImageResource(R.drawable.ic_lockunlocked);
+        myService.stopServing();
+        unbindService(myConnection);
     }
 
     //Defines callbacks for service binding, passed to bindService()

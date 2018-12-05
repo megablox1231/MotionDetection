@@ -105,6 +105,18 @@ public class AccelSensor implements SensorEventListener{
         }
     }
 
+    //used to check if a music file exists
+    public static boolean tryMusicFile(String myMusicFileName, Context myContext){
+        try {
+            Uri uri = Uri.parse(myMusicFileName);
+            MediaPlayer myMediaPlayer = MediaPlayer.create(myContext, uri);
+            myMediaPlayer.getDuration();
+        }catch(Exception e){
+            return false;
+        }
+        return true;
+    }
+
     public MediaPlayer getMediaPlayer(){
         return myMediaPlayer;
     }

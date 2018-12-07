@@ -8,6 +8,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -116,6 +117,15 @@ public class MovementWatchService extends IntentService {
         myProps.checking = true;
         while(myProps.checking){  //keeps service running
         }
+        while(true){
+            //keeeeeps service running
+            vibrate();
+        }
+    }
+
+    public void vibrate() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
     }
 
     //stuff done before stopping service

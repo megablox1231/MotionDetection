@@ -87,11 +87,12 @@ public class AccelSensor implements SensorEventListener{
         myMaxAccel = maxAccel;
     }
 
-    //plays the alarm sound
+    //plays the alarm sound and calls all the other stuff apparently
     public void onAccelAlert(){
         unregisterAccel();
         myMediaPlayer.setLooping(true);
         myMediaPlayer.start();
+        myProps.checking = false;
     }
 
     private void initMediaPlayer(){

@@ -9,7 +9,7 @@
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:background="@color/colorAccent"
         android:text="@string/error"
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:background="@color/colorAccent"
         android:text="@string/custom_audio_error_descrip"
         android:textColor="@color/colorPrimaryDark" />

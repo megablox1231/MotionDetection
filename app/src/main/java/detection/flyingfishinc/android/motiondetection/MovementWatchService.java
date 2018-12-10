@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -124,8 +126,17 @@ public class MovementWatchService extends IntentService {
     }
 
     public void vibrate() {
+        Log.d(LOG_TAG, "vibrating!");
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
+        //if build version is 26 or above
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //2147483647 is max int; about 24 days; amplitude is 1-255
+            vibrator.vibrate(VibrationEffect.createOneShot(2147483647, 100));
+        }
+        else{
+            //deprecated version
+            vibrator.vibrate(2147483647);
+        }
     }
 
     //stuff done before stopping service

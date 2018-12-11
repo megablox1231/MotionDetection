@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private void createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= 26){
             CharSequence name = "Motion Detection Alarm";
-            String description = "channel description";
+            String description = "The Motion Detection Alarm";
             int importance = NotificationManager.IMPORTANCE_LOW;    //low as in how intrusive the notification is
             NotificationChannel channel = new NotificationChannel("Channel Id", name, importance);
             channel.setDescription(description);
@@ -74,15 +74,11 @@ public class MainActivity extends AppCompatActivity {
         else{
             props = new Properties("default");  //music file not found
         }
+        props.setVibrate(mySharedPrefs.getBoolean("vibrate", false));   //vibration option
     }
 
     //checks if the music file exists
     public boolean verifyMusic(String musicFile){
-        //Uri uri = Uri.parse(musicFile);
-        //ContentResolver cr = getContentResolver();
-        //String[] projection = {MediaStore.MediaColumns.DATA};
-        //Cursor cur = cr.query(Uri.parse(musicFile), projection, null, null, null);
-        //File file = new File(cur.getString(0));
         if(AccelSensor.tryMusicFile(musicFile, getApplicationContext())){
             return true;
         }

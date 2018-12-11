@@ -11,27 +11,39 @@ public class Properties implements Parcelable {
     public float myMaxAccel;
     public String myMusicFileName;  //"default" if it is the default music file
     public boolean checking;    //true if the accelerometer listener is registered and checking
+    public boolean vibrate; //true if the alarm vibrates when triggered
 
     public Properties(){
         myMaxAccel = DEFAULTMAXACCEL;
         myMusicFileName = "default";
         checking = false;
+        vibrate = false;
     }
 
     public Properties(String musicFileName) {
         myMaxAccel = DEFAULTMAXACCEL;
         myMusicFileName = musicFileName;
         checking = false;
+        vibrate = false;
     }
 
     public Properties(Parcel in){
         Bundle bundle = in.readBundle();
         myMaxAccel = bundle.getFloat("myMaxAccel");
         myMusicFileName = bundle.getString("myMusicFileName");
+        vibrate = bundle.getBoolean("vibrate");
     }
 
     public void setMusicFileName(String musicFileName) {
         myMusicFileName = musicFileName;
+    }
+
+    public void setVibrate(boolean vibing){
+        vibrate = vibing;
+    }
+
+    public boolean getVibrate(){
+        return vibrate;
     }
 
     //default implementation, nothing to see here folks.
@@ -56,6 +68,7 @@ public class Properties implements Parcelable {
         Bundle bundle = new Bundle();
         bundle.putString("myMusicFileName", myMusicFileName);
         bundle.putFloat("myMaxAccel", myMaxAccel);
+        bundle.putBoolean("vibrate", vibrate);
         dest.writeBundle(bundle);
     }
 }

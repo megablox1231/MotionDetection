@@ -12,12 +12,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String LOG_TAG = SettingsActivity.class.getSimpleName();
-    private String selectedMusic;
+    private String selectedMusic;   //either default or custom music file
+    private CheckBox vibeBox;   //checkbox for vibration
 
     private final int MUSIC_SELECT_CODE = 1;    //code for the music intent
     private boolean initializing;    //true if creation being done  from onCreate
@@ -33,6 +35,7 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         spinner.setAdapter(adapter);
         initializing = true;
         initSpinner(spinner);
+        initVibeBox();
         Log.d(LOG_TAG, "onCreate");
     }
 
@@ -45,6 +48,13 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         }
         else {
             spinner.setSelection(1);
+        }
+    }
+
+    public void initVibeBox(){
+        vibeBox = findViewById(R.id.vibeCheckBox);
+        if(MainActivity.props.getVibrate()){
+            vibeBox.setChecked(true);   //if the vibrate option is on then the checkbox must be checked
         }
     }
 
@@ -129,11 +139,22 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
             }
         }
 
+        //saves all of the settings
     public void saveSettings(View view) {
         SharedPreferences.Editor editor = MainActivity.mySharedPrefs.edit();
         editor.putString("musicFileName", selectedMusic);
+
+        if(vibeBox.isChecked()) {
+            editor.putBoolean("vibrate", true);
+        }
+        else{
+            editor.putBoolean("vibrate", false);
+        }
         editor.apply();
+
         MainActivity.props.setMusicFileName(selectedMusic);
+        MainActivity.props.setVibrate(vibeBox.isChecked());
+
         Snackbar snackbar = Snackbar.make(findViewById(R.id.myCoordLayout), "Settings Saved!", Snackbar.LENGTH_SHORT);  //popup
         snackbar.show();
         Log.d(LOG_TAG, "settings Saved!");

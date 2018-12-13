@@ -96,7 +96,6 @@ public class AccelSensor implements SensorEventListener{
     }
 
     private void initMediaPlayer(){
-        //TODO: implement choosing other music files from storage
         if(myMusicFileName.equals("default")) { //play the default alarm sound
             myMediaPlayer = MediaPlayer.create(myContext, R.raw.siren_sound);
         }

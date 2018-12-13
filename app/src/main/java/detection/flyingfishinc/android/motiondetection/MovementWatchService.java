@@ -27,6 +27,7 @@ public class MovementWatchService extends IntentService {
     private final IBinder myBinder = new LocalBinder(); //binder given to clients
     private Properties myProps;
     private AccelSensor myAccelSensor;
+    private Vibrator myVibrator;
 
     // TODO: Rename actions, choose action names that describe tasks that this
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
@@ -120,22 +121,22 @@ public class MovementWatchService extends IntentService {
         while(myProps.checking){  //keeps service running
         }
         while(true){
-            //keeeeeps service running
+            //keeps service running after alarm triggered
             vibrate();
         }
     }
 
     public void vibrate() {
         Log.d(LOG_TAG, "vibrating!");
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        myVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         //if build version is 26 or above
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //2147483647 is max int; about 24 days; amplitude is 1-255
-            vibrator.vibrate(VibrationEffect.createOneShot(2147483647, 100));
+            myVibrator.vibrate(VibrationEffect.createOneShot(2147483647, 100));
         }
         else{
             //deprecated version
-            vibrator.vibrate(2147483647);
+            myVibrator.vibrate(2147483647);
         }
     }
 
@@ -144,6 +145,7 @@ public class MovementWatchService extends IntentService {
         MediaPlayer mediaPlayer = myAccelSensor.getMediaPlayer();
         if(mediaPlayer.isPlaying()){    //see if the alarm has been triggered yet
             mediaPlayer.stop();
+            myVibrator.cancel();
         }
         else{
             myAccelSensor.unregisterAccel();

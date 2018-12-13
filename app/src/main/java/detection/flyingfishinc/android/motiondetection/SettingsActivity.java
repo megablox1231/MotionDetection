@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +16,12 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
-public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class SettingsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, ResetDialogFragment.ResetDialogListener {
 
     private static final String LOG_TAG = SettingsActivity.class.getSimpleName();
     private String selectedMusic;   //either default or custom music file
     private CheckBox vibeBox;   //checkbox for vibration
+    private NDSpinner mySpinner;
 
     private final int MUSIC_SELECT_CODE = 1;    //code for the music intent
     private boolean initializing;    //true if creation being done  from onCreate
@@ -28,13 +30,13 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        NDSpinner spinner = findViewById(R.id.musicSpinner);
-        spinner.setOnItemSelectedListener(this);    //sets this activity as the listener
+        mySpinner = findViewById(R.id.musicSpinner);
+        mySpinner.setOnItemSelectedListener(this);    //sets this activity as the listener
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.musicLabels, android.R.layout.simple_spinner_item);  //spinner needs adapter to connect to array of items
         adapter.setDropDownViewResource(R.layout.spinner_item);
-        spinner.setAdapter(adapter);
+        mySpinner.setAdapter(adapter);
         initializing = true;
-        initSpinner(spinner);
+        initSpinner(mySpinner);
         initVibeBox();
         Log.d(LOG_TAG, "onCreate");
     }
@@ -157,6 +159,39 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
         Snackbar snackbar = Snackbar.make(findViewById(R.id.myCoordLayout), "Settings Saved!", Snackbar.LENGTH_SHORT);  //popup
         snackbar.show();
-        Log.d(LOG_TAG, "settings Saved!");
+        Log.d(LOG_TAG, "Settings saved!");
+    }
+
+
+    //sets all settings to defaults
+    public void resetSettings(View view) {
+        //TODO: Do the dialog thing
+        FragmentManager manager = getSupportFragmentManager();
+        ResetDialogFragment dialogFragment = new ResetDialogFragment();
+        dialogFragment.show(manager, "dialog");
+    }
+
+    //the actual resetting, only done if yes in dialog chosen
+    public void resetHelper(){
+        selectedMusic = "default";
+        mySpinner.setSelection(0);
+        vibeBox.setChecked(false);
+        SharedPreferences.Editor editor = MainActivity.mySharedPrefs.edit();
+        editor.putString("musicFileName", selectedMusic);
+        editor.putBoolean("vibrate", vibeBox.isChecked());
+        editor.apply();
+
+        MainActivity.props.setMusicFileName(selectedMusic);
+        MainActivity.props.setVibrate(vibeBox.isChecked());
+
+        // Snackbar snackbar = Snackbar.make(findViewById(R.id.myCoordLayout), "Settings Saved!", Snackbar.LENGTH_SHORT);  //popup
+        // snackbar.show();
+        Log.d(LOG_TAG, "Settings reset!");
+    }
+
+    //if yes is chosen on the resetDialog
+    @Override
+    public void onYes() {
+        resetHelper();
     }
 }

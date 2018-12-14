@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#ffffff</color>
     <color name="colorBacking">#000000</color>
+    <color name="accent_material_light">#000000</color>
 </resources>

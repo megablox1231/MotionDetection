@@ -120,9 +120,10 @@ public class MovementWatchService extends IntentService {
         myProps.checking = true;
         while(myProps.checking){  //keeps service running
         }
+        vibrate();
+        Log.d(LOG_TAG, "To vibrate");
         while(true){
             //keeps service running after alarm triggered
-            vibrate();
         }
     }
 
@@ -145,7 +146,9 @@ public class MovementWatchService extends IntentService {
         MediaPlayer mediaPlayer = myAccelSensor.getMediaPlayer();
         if(mediaPlayer.isPlaying()){    //see if the alarm has been triggered yet
             mediaPlayer.stop();
-            myVibrator.cancel();
+            if(myProps.getVibrate()) {
+                myVibrator.cancel();
+            }
         }
         else{
             myAccelSensor.unregisterAccel();

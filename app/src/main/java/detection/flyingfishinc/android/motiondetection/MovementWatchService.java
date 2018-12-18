@@ -8,6 +8,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
@@ -116,7 +117,15 @@ public class MovementWatchService extends IntentService {
         Log.d(LOG_TAG, "Service started!");
         myProps = intent.getParcelableExtra("props");
         myAccelSensor = new AccelSensor(getApplicationContext(), myProps);
+        //delayed setting up of the listener
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Log.d(LOG_TAG, "oof interuption");
+        }
         myAccelSensor.registerAccel();
+        Log.d(LOG_TAG, "done");
         myProps.checking = true;
         while(myProps.checking){  //keeps service running
         }

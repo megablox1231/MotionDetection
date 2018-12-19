@@ -127,6 +127,7 @@ public class MovementWatchService extends IntentService {
         myAccelSensor.registerAccel();
         Log.d(LOG_TAG, "done");
         myProps.checking = true;
+        Log.d(LOG_TAG, Boolean.toString(myProps.checking));
         while(myProps.checking){  //keeps service running
         }
         vibrate();
@@ -152,6 +153,7 @@ public class MovementWatchService extends IntentService {
 
     //stuff done before stopping service
     public void stopServing() {
+        Log.d(LOG_TAG, "donezo");
         MediaPlayer mediaPlayer = myAccelSensor.getMediaPlayer();
         if(mediaPlayer.isPlaying()){    //see if the alarm has been triggered yet
             mediaPlayer.stop();

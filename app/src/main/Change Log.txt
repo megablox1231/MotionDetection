@@ -1,0 +1,2 @@
+Vibration added
+defaults reset button added

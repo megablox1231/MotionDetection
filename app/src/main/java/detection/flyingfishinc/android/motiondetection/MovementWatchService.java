@@ -129,6 +129,7 @@ public class MovementWatchService extends IntentService {
         myProps.checking = true;
         Log.d(LOG_TAG, Boolean.toString(myProps.checking));
         while(myProps.checking){  //keeps service running
+            Log.d(LOG_TAG, "kill me");   //keeps doing this even after death; stops when app dies
         }
         vibrate();
         Log.d(LOG_TAG, "To vibrate");
@@ -164,7 +165,8 @@ public class MovementWatchService extends IntentService {
         else{
             myAccelSensor.unregisterAccel();
         }
-        stopSelf();
+        stopForeground(true);
+        this.stopSelf();
     }
 
     @Override

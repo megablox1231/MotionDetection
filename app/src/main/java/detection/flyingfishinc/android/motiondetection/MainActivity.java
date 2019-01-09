@@ -165,8 +165,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void turnOffAlarm(){
         alarmButton.setImageResource(R.drawable.ic_lockunlocked);
-        myService.stopServing();
         unbindService(myConnection);
+        myService.stopServing();
     }
 
     //Defines callbacks for service binding, passed to bindService()

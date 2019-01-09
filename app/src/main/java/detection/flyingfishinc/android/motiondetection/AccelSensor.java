@@ -93,7 +93,7 @@ public class AccelSensor implements SensorEventListener{
         myMediaPlayer.setLooping(true);
         myMediaPlayer.start();
         myProps.checking = false;
-        Log.d(LOG_TAG, "oi checking false");
+        Log.d(LOG_TAG, Boolean.toString(myProps.checking));
     }
 
     private void initMediaPlayer(){

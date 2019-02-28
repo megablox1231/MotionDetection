@@ -131,8 +131,10 @@ public class MovementWatchService extends IntentService {
         while(myProps.checking){  //keeps service running
             Log.d(LOG_TAG, "kill me");   //keeps doing this even after death of service; stops when app dies
         }
-        vibrate();
-        Log.d(LOG_TAG, "To vibrate");
+        if(myProps.getVibrate()) {
+            vibrate();
+            Log.d(LOG_TAG, "To vibrate");
+        }
         while(true){
             //keeps service running after alarm triggered
         }

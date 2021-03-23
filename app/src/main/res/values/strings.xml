@@ -9,6 +9,7 @@
     <string name="error">Error</string>
     <string name="custom_audio_error_descrip">Custom audio not found! Default audio chosen.</string>
     <string name="reset_to_defaults">Reset To Defaults</string>
+    <string name="vibration">Vibration</string>
     <string-array name="musicLabels">
         <item>Siren 1</item>
         <item>Custom Audio</item>

@@ -1,4 +1,4 @@
-package detection.flyingfishinc.android.motiondetection;
+package detect.flyingfishinc.android.motiondetection;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -18,6 +18,7 @@ public class AccelSensor implements SensorEventListener{
     private Properties myProps;   //the properties object that owns this listener
     private Context myContext;  //the context of the service
     private MediaPlayer myMediaPlayer;
+    private MovementWatchService mwService;
 
 
     private long lastTime;  //the time of the last call of accelchange
@@ -28,8 +29,9 @@ public class AccelSensor implements SensorEventListener{
     private boolean initAccels;    //true if last Accels have not been recorded yet
     private String myMusicFileName; //the name of the music file for the alarm
 
-    public AccelSensor(Context context, Properties props){
+    public AccelSensor(Context context, Properties props, MovementWatchService service){
         myContext = context;
+        mwService = service;
         mySensorManager = (SensorManager) myContext.getSystemService(Context.SENSOR_SERVICE);
         myAccelerometer = mySensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         curAccels = new float[3];
@@ -93,7 +95,10 @@ public class AccelSensor implements SensorEventListener{
         myMediaPlayer.setLooping(true);
         myMediaPlayer.start();
         myProps.checking = false;
-        Log.d(LOG_TAG, Boolean.toString(myProps.checking));
+        if(myProps.getVibrate()) {
+            mwService.vibrate();
+            Log.d(LOG_TAG, "To vibrate");
+        }
     }
 
     private void initMediaPlayer(){
@@ -111,7 +116,7 @@ public class AccelSensor implements SensorEventListener{
         try {
             Uri uri = Uri.parse(myMusicFileName);
             MediaPlayer myMediaPlayer = MediaPlayer.create(myContext, uri);
-            myMediaPlayer.getDuration();
+            myMediaPlayer.getDuration(); //called to check if myMediaPlayer is null
         }catch(Exception e){
             return false;
         }

@@ -1,4 +1,4 @@
-package detection.flyingfishinc.android.motiondetection;
+package detect.flyingfishinc.android.motiondetection;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

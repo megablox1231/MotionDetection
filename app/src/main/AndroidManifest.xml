@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="detection.flyingfishinc.android.motiondetection">
+    package="detect.flyingfishinc.android.motiondetection">
 
     <uses-feature
         android:name="android.hardware.sensor.accelerometer"
@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="detect.flyingfishinc.android.motiondetection.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,15 +22,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity">
+            android:name="detect.flyingfishinc.android.motiondetection.SettingsActivity"
+            android:parentActivityName="detect.flyingfishinc.android.motiondetection.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value="detect.flyingfishinc.android.motiondetection.MainActivity" />
         </activity>
 
         <service
-            android:name=".MovementWatchService"
+            android:name="detect.flyingfishinc.android.motiondetection.MovementWatchService"
             android:exported="false"></service>
     </application>
 

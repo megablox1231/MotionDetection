@@ -1,8 +1,10 @@
-package detection.flyingfishinc.android.motiondetection;
+package detect.flyingfishinc.android.motiondetection;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -15,15 +17,19 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     public static Properties props;
     private ImageButton alarmButton;
+    private TextView initTextView;
     private MovementWatchService myService;
     public static SharedPreferences mySharedPrefs;    //settings
 
-    private boolean checked;    //true if alarm is on
+    private long    btnDelay;
+    private boolean checked;        //true if alarm is on
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         initProperties();
         createNotificationChannel();
         alarmButton = findViewById(R.id.alarmBtn);
+        initTextView = findViewById(R.id.initTextView);
         Log.d(LOG_TAG, "onCreate");
     }
 
@@ -148,25 +155,39 @@ public class MainActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "onRestart");
     }
 
-    public void turnOnOffAlarm(View view) {
-        checked = !checked;
-        if(checked){   //means it was turned on
-            alarmButton.setImageResource(R.drawable.ic_locklocked);
-            Intent serviceIntent = new Intent(this, MovementWatchService.class);  //making service intent
-            serviceIntent.putExtra("props", props);
-            ContextCompat.startForegroundService(this, serviceIntent);  //starting the service
-            Intent serviceIntent2 = new Intent(this, MovementWatchService.class);  //second service intent for binding
-            bindService(serviceIntent2, myConnection, 0);
-        }
-        else {
-            turnOffAlarm();
+    public void turnOnOffAlarm(View view){
+        if(System.currentTimeMillis() - btnDelay > 1500) {
+            btnDelay = System.currentTimeMillis();
+            checked = !checked;
+            if (checked) {   //means it was turned on
+                alarmButton.setImageResource(R.drawable.ic_locklocked);
+                Intent serviceIntent = new Intent(this, MovementWatchService.class);  //making service intent
+                serviceIntent.putExtra("props", props);
+                ContextCompat.startForegroundService(this, serviceIntent);  //starting the service
+                Intent serviceIntent2 = new Intent(this, MovementWatchService.class);  //second service intent for binding
+                bindService(serviceIntent2, myConnection, 0);
+            } else {
+                turnOffAlarm();
+            }
         }
     }
 
     public void turnOffAlarm(){
+        Log.d(LOG_TAG, "service is running? " + isMyServiceRunning());
         alarmButton.setImageResource(R.drawable.ic_lockunlocked);
         unbindService(myConnection);
-        myService.stopServing();
+        myService.stopSelf();
+        Log.d(LOG_TAG, "service is running? " + isMyServiceRunning());
+    }
+
+    private boolean isMyServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (MovementWatchService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //Defines callbacks for service binding, passed to bindService()
@@ -180,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            myService = null;
             Log.d(LOG_TAG, "Service unbounded!");
         }
     };

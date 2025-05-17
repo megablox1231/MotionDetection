@@ -4,10 +4,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -165,7 +165,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
 
     //sets all settings to defaults
     public void resetSettings(View view) {
-        //TODO: Do the dialog thing
         FragmentManager manager = getSupportFragmentManager();
         ResetDialogFragment dialogFragment = new ResetDialogFragment();
         dialogFragment.show(manager, "dialog");
@@ -184,8 +183,6 @@ public class SettingsActivity extends AppCompatActivity implements AdapterView.O
         MainActivity.props.setMusicFileName(selectedMusic);
         MainActivity.props.setVibrate(vibeBox.isChecked());
 
-        // Snackbar snackbar = Snackbar.make(findViewById(R.id.myCoordLayout), "Settings Saved!", Snackbar.LENGTH_SHORT);  //popup
-        // snackbar.show();
         Log.d(LOG_TAG, "Settings reset!");
     }
 

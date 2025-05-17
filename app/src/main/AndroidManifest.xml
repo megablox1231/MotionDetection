@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="detect.flyingfishinc.android.motiondetection.MainActivity">
+        <activity android:name="detect.flyingfishinc.android.motiondetection.MainActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +31,9 @@
 
         <service
             android:name="detect.flyingfishinc.android.motiondetection.MovementWatchService"
-            android:exported="false"></service>
+            android:exported="false">
+
+        </service>
     </application>
 
 </manifest>

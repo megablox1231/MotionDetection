@@ -11,16 +11,9 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
-/**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
- */
 public class MovementWatchService extends IntentService {
 
     private static final String LOG_TAG = MovementWatchService.class.getSimpleName();
@@ -126,7 +119,6 @@ public class MovementWatchService extends IntentService {
             }
         }
         myAccelSensor.unregisterAccel();
-        //TODO: mediaPlayer.release();
         stopForeground(true);
         destroy = true;
         super.onDestroy();
